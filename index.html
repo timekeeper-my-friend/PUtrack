@@ -25,8 +25,8 @@
     </style> 
 </head> 
 <body> 
-<!-- Publicly sourced alarm audio tracker file -->
-<audio id="alarmAudio" src="https://google.com" preload="auto"></audio>
+<!-- Sourced watch alert audio file directly from secure assets over the internet -->
+<audio id="alarmAudio" src="https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg" preload="auto"></audio>
 <div class="tracker"> 
     <div class="section">
         <h3>Select Profile</h3>
@@ -54,13 +54,43 @@
         </div> 
     </div>
 </div>
-<script type="module"> 
-    import { userList, exercisesDataset, shopDataset, EMAILJS_KEYS } from './config.js';
+<script> 
+    // ==========================================================
+    // ⚙️ CHOOSE YOUR PROFILE NAMES HERE
+    // Change these values to swap your real names into the app!
+    // ==========================================================
+    const REAL_NAME_1 = "Awesome"; 
+    const REAL_NAME_2 = "bro";
 
+    // --- EMAILJS CONFIGURATION ---
+    const EMAILJS_KEYS = {
+        PUBLIC_KEY: "YOUR_PUBLIC_KEY",
+        SERVICE_ID: "YOUR_SERVICE_ID",
+        TEMPLATE_ID: "YOUR_TEMPLATE_ID"
+    };
+
+    // --- MODULAR DATA INTERFACES ---
+    const userList = [REAL_NAME_1, REAL_NAME_2];
+
+    const exercisesDataset = [
+        { id: "user1_run", name: "Run for 10 Minutes", payout: 120, allowedUsers: [REAL_NAME_1] },
+        { id: "user1_jacks", name: "60 Jumping Jacks", payout: 60, allowedUsers: [REAL_NAME_1] },
+        { id: "user2_pushups", name: "12 Pushups", payout: 60, allowedUsers: [REAL_NAME_2] },
+        { id: "user2_pullups", name: "1 Pull-up", payout: 10, allowedUsers: [REAL_NAME_2] }
+    ];
+
+    const shopDataset = [
+        { id: "pc_10", name: "10 Minutes Computer Time", cost: 10, minutes: 10, allowedUsers: ["all"] },
+        { id: "pc_60", name: "1 Hour Computer Time", cost: 60, minutes: 60, allowedUsers: ["all"] },
+        { id: "pc_120", name: "2 Hours Computer Time", cost: 120, minutes: 120, allowedUsers: ["all"] }
+    ];
+
+    // Initialize EmailJS Engine
     if (EMAILJS_KEYS.PUBLIC_KEY !== "YOUR_PUBLIC_KEY") {
         emailjs.init(EMAILJS_KEYS.PUBLIC_KEY);
     }
 
+    // --- APPLICATION RUNTIME STATE ---
     const userBalances = {}; 
     let countdownInterval = null; 
     let secondsLeft = 0; 
@@ -188,3 +218,10 @@
 </script> 
 </body> 
 </html>
+
+
+
+
+
+
+
