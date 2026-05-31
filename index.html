@@ -54,21 +54,24 @@
     </div>
 </div>
 <script> 
-    // =========================================================================
-    // ⚙️ MODULAR LOCAL CONFIGURATION DATABASE
-    // You can add, edit, or delete names and exercises inside these arrays!
-    // =========================================================================
-    const REAL_NAME_1 = "Tate"; 
-    const REAL_NAME_2 = "Cooper";
+    // ==========================================
+    // ⚙️ SYSTEM SETTINGS (INPUT VARIABLES HERE)
+    // ==========================================
+    const REAL_NAME_1 = "Awesome"; 
+    const REAL_NAME_2 = "bro";
 
-    // --- PASTE YOUR EMAILJS PRIVATE KEYS HERE ---
     const EMAILJS_KEYS = {
-        PUBLIC_KEY: "79W_m7oGQ5_DoOKyD",
-        SERVICE_ID: "theExerciseFunManOWhimsy",
-        TEMPLATE_ID: "template_kwxldvs"
+        PUBLIC_KEY: "YOUR_PUBLIC_KEY",
+        SERVICE_ID: "YOUR_SERVICE_ID",
+        TEMPLATE_ID: "YOUR_TEMPLATE_ID"
     };
 
+    // --- TRACKER RUNTIME MANAGEMENT STATE ---
     const userList = [REAL_NAME_1, REAL_NAME_2];
+    const userBalances = {}; 
+    let countdownInterval = null; 
+    let secondsLeft = 0; 
+    let savedSeconds = 0; 
 
     const exercisesDataset = [
         { id: "user1_run", name: "Run for 10 Minutes", payout: 120, allowedUsers: [REAL_NAME_1] },
@@ -83,14 +86,7 @@
         { id: "pc_120", name: "2 Hours Computer Time", cost: 120, minutes: 120, allowedUsers: ["all"] }
     ];
 
-    // --- TRACKER RUNTIME MANAGEMENT STATE ---
-    const userBalances = {}; 
-    let countdownInterval = null; 
-    let secondsLeft = 0; 
-    let savedSeconds = 0; 
-
     window.onload = function() {
-        // Direct, forced initialization verification check
         if (EMAILJS_KEYS.PUBLIC_KEY && EMAILJS_KEYS.PUBLIC_KEY !== "YOUR_PUBLIC_KEY") {
             emailjs.init({ publicKey: EMAILJS_KEYS.PUBLIC_KEY });
         }
@@ -251,6 +247,7 @@
 </script> 
 </body> 
 </html>
+
 
 
 
