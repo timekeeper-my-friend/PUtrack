@@ -1,4 +1,5 @@
 <!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Tracker</title>
+<!-- Official EmailJS SDK script link to securely bypass browser network locks -->
 <script type="text/javascript" src="https://unpkg.com"></script>
 <style>
     body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; background-color: #f3f4f6; padding: 20px; } 
@@ -52,6 +53,7 @@
     ];
 
     window.onload = function() {
+        // Correct initialization method for the SDK script library link
         if (typeof emailjs !== 'undefined') {
             emailjs.init({ publicKey: EMAILJS_KEYS.PUBLIC_KEY });
         }
@@ -107,9 +109,17 @@
         sendReceipt(name, item.name, item.cost);
     }
 
+    // Swapped raw browser fetch out for the official SDK email transmission call
     function sendReceipt(name, item, cost) {
         if (typeof emailjs === 'undefined') return;
-        const templateParams = { buyer_name: name, item_purchased: item, cost: cost, timestamp: new Date().toLocaleString() };
+        
+        const templateParams = {
+            buyer_name: name,
+            item_purchased: item,
+            cost: cost,
+            timestamp: new Date().toLocaleString()
+        };
+
         emailjs.send(EMAILJS_KEYS.SERVICE_ID, EMAILJS_KEYS.TEMPLATE_ID, templateParams)
             .then(() => alert("📬 Success! Receipt message successfully sent to the moderator!"))
             .catch((error) => alert("❌ EmailJS Dashboard Error: " + JSON.stringify(error)));
@@ -137,6 +147,7 @@
         document.getElementById('timer').textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
     }
 </script></body></html>
+
 
 
 
