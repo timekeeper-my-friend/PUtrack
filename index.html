@@ -1,128 +1,184 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Push-Up Tracker</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f3f4f6;
-        }
-        .tracker {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        input {
-            padding: 10px;
-            font-size: 16px;
-            width: 100px;
-            text-align: center;
-            margin-right: 8px;
-        }
-        button {
-            padding: 10px 16px;
-            font-size: 16px;
-            margin: 4px;
-            cursor: pointer;
-        }
-        #timer {
-            font-size: 54px;
-            font-weight: bold;
-            margin: 20px 0;
-            font-family: monospace;
-        }
-    </style>
-</head>
-<body>
-
-<div class="tracker">
-    <input type="number" id="pushups" placeholder="Push-ups" min="1">
-    <button id="setBtn">Set Time</button>
-    
-    <div id="timer">00:00:00</div>
-    
-    <div>
-        <button id="startBtn" disabled>Start</button>
-        <button id="pauseBtn" disabled>Pause</button>
-        <button id="stopBtn" disabled>Stop</button>
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Exercise & Time Shop Tracker</title> 
+    <!-- Secure Frontend Email SDK Integration -->
+    <script type="text/javascript" src="https://jsdelivr.net"></script>
+    <style> 
+        body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; background-color: #f3f4f6; padding: 20px; } 
+        .tracker { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; max-width: 450px; width: 100%; } 
+        .section { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 2px solid #f1f5f9; }
+        .section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        h3 { margin-top: 0; color: #1e293b; font-size: 18px; }
+        select, button { padding: 10px 16px; font-size: 16px; margin: 4px; border-radius: 6px; } 
+        select { border: 1px solid #cbd5e1; background: white; text-align: center; }
+        button { background-color: #2563eb; color: white; border: none; font-weight: bold; cursor: pointer; }
+        button:disabled { background-color: #cbd5e1; cursor: not-allowed; }
+        #balance-display { font-size: 22px; font-weight: bold; color: #16a34a; margin-bottom: 10px; }
+        #timer { font-size: 54px; font-weight: bold; margin: 15px 0; font-family: monospace; } 
+        .shop-list { display: flex; flex-direction: column; gap: 8px; text-align: left; margin-top: 10px; }
+        .shop-item { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 6px; }
+        .shop-item span { font-weight: 500; font-size: 14px; }
+        .buy-btn { background-color: #16a34a; font-size: 14px; padding: 6px 12px; margin: 0; }
+    </style> 
+</head> 
+<body> 
+<div class="tracker"> 
+    <div class="section">
+        <h3>Select Profile</h3>
+        <select id="userDropdown"></select>
+    </div>
+    <div class="section">
+        <div id="balance-display"><span id="displayName">Loading</span>'s Balance: <span id="pointsBalance">0</span> Points</div>
+    </div>
+    <div class="section">
+        <h3>1. Track Exercises</h3>
+        <select id="exerciseSelect"></select>
+        <button id="claimBtn">Claim Points</button>
+    </div>
+    <div class="section">
+        <h3>2. Time Reward Shop</h3>
+        <div class="shop-list" id="shopContainer"></div>
+    </div>
+    <div class="section">
+        <h3>3. Active Time Remaining</h3>
+        <div id="timer">00:00:00</div> 
+        <div> 
+            <button id="startBtn" disabled>Start Time</button> 
+            <button id="pauseBtn" disabled>Pause</button> 
+            <button id="stopBtn" disabled>Stop</button> 
+        </div> 
     </div>
 </div>
+<script type="module"> 
+    import { userList, exercisesDataset, shopDataset, EMAILJS_KEYS } from './config.js';
 
-<script>
-    let interval;
-    let secondsLeft = 0;
-    let savedSeconds = 0;
-
-    const pushupsInput = document.getElementById('pushups');
-    const setBtn = document.getElementById('setBtn');
-    const timerDisplay = document.getElementById('timer');
-    const startBtn = document.getElementById('startBtn');
-    const pauseBtn = document.getElementById('pauseBtn');
-    const stopBtn = document.getElementById('stopBtn');
-
-    setBtn.addEventListener('click', () => {
-        const num = parseInt(pushupsInput.value);
-        if (!num || num <= 0) return;
-        
-        secondsLeft = num * 5 * 60; 
-        savedSeconds = secondsLeft;
-        
-        updateClock();
-        clearInterval(interval);
-        
-        startBtn.disabled = false;
-        pauseBtn.disabled = true;
-        stopBtn.disabled = false;
-    });
-
-    startBtn.addEventListener('click', () => {
-        startBtn.disabled = true;
-        pauseBtn.disabled = false;
-        
-        interval = setInterval(() => {
-            if (secondsLeft <= 0) {
-                clearInterval(interval);
-                timerDisplay.textContent = "00:00:00";
-                pauseBtn.disabled = true;
-                return;
-            }
-            secondsLeft--;
-            updateClock();
-        }, 1000);
-    });
-
-    pauseBtn.addEventListener('click', () => {
-        clearInterval(interval);
-        startBtn.disabled = false;
-        pauseBtn.disabled = true;
-    });
-
-    stopBtn.addEventListener('click', () => {
-        clearInterval(interval);
-        secondsLeft = savedSeconds;
-        updateClock();
-        startBtn.disabled = false;
-        pauseBtn.disabled = true;
-    });
-
-    function updateClock() {
-        const hrs = Math.floor(secondsLeft / 3600);
-        const mins = Math.floor((secondsLeft % 3600) / 60);
-        const secs = secondsLeft % 60;
-        
-        timerDisplay.textContent = 
-            `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    if (EMAILJS_KEYS.PUBLIC_KEY !== "YOUR_PUBLIC_KEY") {
+        emailjs.init(EMAILJS_KEYS.PUBLIC_KEY);
     }
-</script>
 
-</body>
+    const userBalances = {}; 
+    let countdownInterval = null; 
+    let secondsLeft = 0; 
+    let savedSeconds = 0; 
+
+    const userDropdown = document.getElementById('userDropdown');
+    const displayName = document.getElementById('displayName');
+    const pointsBalance = document.getElementById('pointsBalance');
+    const exerciseSelect = document.getElementById('exerciseSelect');
+    const claimBtn = document.getElementById('claimBtn');
+    const shopContainer = document.getElementById('shopContainer');
+    const timerDisplay = document.getElementById('timer'); 
+    const startBtn = document.getElementById('startBtn'); 
+    const pauseBtn = document.getElementById('pauseBtn'); 
+    const stopBtn = document.getElementById('stopBtn'); 
+
+    function initApp() {
+        userList.forEach(name => {
+            const opt = document.createElement('option');
+            opt.value = name; opt.textContent = name;
+            userDropdown.appendChild(opt);
+            userBalances[name] = 0;
+        });
+        userDropdown.addEventListener('change', refreshUserContext);
+        claimBtn.addEventListener('click', handleExerciseClaim);
+        startBtn.addEventListener('click', startTimer);
+        pauseBtn.addEventListener('click', pauseTimer);
+        stopBtn.addEventListener('click', stopTimer);
+        refreshUserContext();
+    }
+
+    function refreshUserContext() {
+        const currentName = userDropdown.value;
+        if (!currentName) return;
+        displayName.textContent = currentName;
+        pointsBalance.textContent = userBalances[currentName];
+
+        exerciseSelect.innerHTML = '';
+        exercisesDataset.forEach(item => {
+            if (item.allowedUsers.includes("all") || item.allowedUsers.includes(currentName)) {
+                const opt = document.createElement('option');
+                opt.value = item.id; opt.textContent = `${item.name} (+${item.payout} pts)`;
+                exerciseSelect.appendChild(opt);
+            }
+        });
+
+        shopContainer.innerHTML = '';
+        shopDataset.forEach(item => {
+            if (item.allowedUsers.includes("all") || item.allowedUsers.includes(currentName)) {
+                const row = document.createElement('div');
+                row.className = 'shop-item';
+                row.innerHTML = `<span>${item.name} <strong>(${item.cost} pts)</strong></span>`;
+                const buyButton = document.createElement('button');
+                buyButton.className = 'buy-btn'; buyButton.textContent = 'Buy';
+                buyButton.addEventListener('click', () => handlePurchase(item.id, currentName));
+                row.appendChild(buyButton); shopContainer.appendChild(row);
+            }
+        });
+    }
+
+    function handleExerciseClaim() {
+        const currentName = userDropdown.value;
+        const selectedId = exerciseSelect.value;
+        const selectedExercise = exercisesDataset.find(ex => ex.id === selectedId);
+        if (selectedExercise) {
+            userBalances[currentName] += selectedExercise.payout;
+            pointsBalance.textContent = userBalances[currentName];
+            alert(`Verified! ${currentName} claimed ${selectedExercise.payout} points.`);
+        }
+    }
+
+    function handlePurchase(itemId, buyerName) {
+        const targetItem = shopDataset.find(item => item.id === itemId);
+        if (!targetItem) return;
+        if (userBalances[buyerName] < targetItem.cost) {
+            alert(`Insufficient points! ${buyerName} needs more exercises.`);
+            return;
+        }
+        userBalances[buyerName] -= targetItem.cost;
+        pointsBalance.textContent = userBalances[buyerName];
+        if (targetItem.minutes > 0) {
+            secondsLeft += targetItem.minutes * 60;
+            savedSeconds = secondsLeft;
+            updateClockDisplay();
+            startBtn.disabled = false; stopBtn.disabled = false;
+        }
+        alert(`Receipt confirmed! ${buyerName} bought: ${targetItem.name}.`);
+        dispatchEmailReceipt(buyerName, targetItem.name, targetItem.cost);
+    }
+
+    function dispatchEmailReceipt(buyerName, purchasedItem, pointCost) {
+        if (EMAILJS_KEYS.PUBLIC_KEY === "YOUR_PUBLIC_KEY") {
+            console.log(`[Simulation] ${buyerName} bought ${purchasedItem} for ${pointCost} pts.`);
+            return;
+        }
+        const emailPayload = { buyer_name: buyerName, item_purchased: purchasedItem, cost: pointCost, timestamp: new Date().toLocaleString() };
+        emailjs.send(EMAILJS_KEYS.SERVICE_ID, EMAILJS_KEYS.TEMPLATE_ID, emailPayload)
+            .then(() => console.log('Receipt sent!'))
+            .catch(error => console.error('Email error:', error));
+    }
+
+    function startTimer() { 
+        startBtn.disabled = true; pauseBtn.disabled = false; 
+        countdownInterval = setInterval(() => { 
+            if (secondsLeft <= 0) { 
+                clearInterval(countdownInterval); timerDisplay.textContent = "00:00:00"; 
+                pauseBtn.disabled = true; alert("Time balance exhausted!"); return; 
+            } 
+            secondsLeft--; updateClockDisplay(); 
+        }, 1000); 
+    } 
+
+    function pauseTimer() { clearInterval(countdownInterval); startBtn.disabled = false; pauseBtn.disabled = true; } 
+    function stopTimer() { clearInterval(countdownInterval); secondsLeft = savedSeconds; updateClockDisplay(); startBtn.disabled = false; pauseBtn.disabled = true; } 
+    function updateClockDisplay() { 
+        const hrs = Math.floor(secondsLeft / 3600); const mins = Math.floor((secondsLeft % 3600) / 60); const secs = secondsLeft % 60; 
+        timerDisplay.textContent = `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`; 
+    } 
+
+    initApp();
+</script> 
+</body> 
 </html>
