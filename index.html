@@ -1,77 +1,37 @@
-<!DOCTYPE html> 
-<html lang="en"> 
-<head> 
-    <meta charset="UTF-8"> 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-    <title>Exercise & Time Shop Tracker</title> 
-    <!-- Secure Multi-Protocol Email SDK Proxy -->
-    <script type="text/javascript" src="https://unpkg.com"></script>
-    <style> 
-        body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; background-color: #f3f4f6; padding: 20px; } 
-        .tracker { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; max-width: 450px; width: 100%; } 
-        .section { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 2px solid #f1f5f9; }
-        .section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-        h3 { margin-top: 0; color: #1e293b; font-size: 18px; }
-        select, button { padding: 10px 16px; font-size: 16px; margin: 4px; border-radius: 6px; } 
-        select { border: 1px solid #cbd5e1; background: white; text-align: center; min-width: 150px; }
-        button { background-color: #2563eb; color: white; border: none; font-weight: bold; cursor: pointer; }
-        button:disabled { background-color: #cbd5e1; cursor: not-allowed; }
-        #balance-display { font-size: 22px; font-weight: bold; color: #16a34a; margin-bottom: 10px; }
-        #timer { font-size: 54px; font-weight: bold; margin: 15px 0; font-family: monospace; } 
-        .shop-list { display: flex; flex-direction: column; gap: 8px; text-align: left; margin-top: 10px; }
-        .shop-item { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 6px; }
-        .shop-item span { font-weight: 500; font-size: 14px; }
-        .buy-btn { background-color: #16a34a; font-size: 14px; padding: 6px 12px; margin: 0; }
-    </style> 
-</head> 
-<body> 
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Tracker</title>
+<style>
+    body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; background-color: #f3f4f6; padding: 20px; } 
+    .tracker { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; max-width: 450px; width: 100%; } 
+    .section { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 2px solid #f1f5f9; }
+    .section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    h3 { margin-top: 0; color: #1e293b; font-size: 18px; }
+    select, button { padding: 10px 16px; font-size: 16px; margin: 4px; border-radius: 6px; } 
+    select { border: 1px solid #cbd5e1; background: white; text-align: center; min-width: 150px; }
+    button { background-color: #2563eb; color: white; border: none; font-weight: bold; cursor: pointer; }
+    button:disabled { background-color: #cbd5e1; cursor: not-allowed; }
+    #balance-display { font-size: 22px; font-weight: bold; color: #16a34a; margin-bottom: 10px; }
+    #timer { font-size: 54px; font-weight: bold; margin: 15px 0; font-family: monospace; } 
+    .shop-list { display: flex; flex-direction: column; gap: 8px; text-align: left; margin-top: 10px; }
+    .shop-item { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 6px; }
+    .buy-btn { background-color: #16a34a; font-size: 14px; padding: 6px 12px; margin: 0; }
+</style></head><body>
 <audio id="alarmAudio" src="https://google.com" preload="auto"></audio>
 <div class="tracker"> 
-    <div class="section">
-        <h3>Select Profile</h3>
-        <select id="userDropdown"></select>
-    </div>
-    <div class="section">
-        <div id="balance-display"><span id="displayName">Loading</span>'s Balance: <span id="pointsBalance">0</span> Points</div>
-    </div>
-    <div class="section">
-        <h3>1. Track Exercises</h3>
-        <select id="exerciseSelect"></select>
-        <button id="claimBtn">Claim Points</button>
-    </div>
-    <div class="section">
-        <h3>2. Time Reward Shop</h3>
-        <div class="shop-list" id="shopContainer"></div>
-    </div>
-    <div class="section">
-        <h3>3. Active Time Remaining</h3>
-        <div id="timer">00:00:00</div> 
-        <div> 
-            <button id="startBtn" disabled>Start Time</button> 
-            <button id="pauseBtn" disabled>Pause</button> 
-            <button id="stopBtn" disabled>Stop</button> 
-        </div> 
+    <div class="section"><h3>Select Profile</h3><select id="userDropdown"></select></div>
+    <div class="section"><div id="balance-display"><span id="displayName">Loading</span>'s Balance: <span id="pointsBalance">0</span> Points</div></div>
+    <div class="section"><h3>1. Track Exercises</h3><select id="exerciseSelect"></select><button id="claimBtn">Claim Points</button></div>
+    <div class="section"><h3>2. Time Reward Shop</h3><div class="shop-list" id="shopContainer"></div></div>
+    <div class="section"><h3>3. Active Time Remaining</h3><div id="timer">00:00:00</div> 
+        <div><button id="startBtn" disabled>Start Time</button><button id="pauseBtn" disabled>Pause</button><button id="stopBtn" disabled>Stop</button></div> 
     </div>
 </div>
 <script> 
-    // ==========================================
-    // ⚙️ SYSTEM SETTINGS (INPUT VARIABLES HERE)
-    // ==========================================
-    const REAL_NAME_1 = "Tate"; 
-    const REAL_NAME_2 = "Cooper";
+    // --- CONFIGURE SETTINGS DIRECTLY IN THESE LINES ---
+    const REAL_NAME_1 = "Tate", REAL_NAME_2 = "Cooper";
+    const EMAILJS_KEYS = { PUBLIC_KEY: "79W_m7oGQ5_DoOKyD", SERVICE_ID: "theExerciseFunManOWhimsy", TEMPLATE_ID: "template_kwxldvs" };
 
-    const EMAILJS_KEYS = {
-        PUBLIC_KEY: "79W_m7oGQ5_DoOKyD",
-        SERVICE_ID: "theExerciseFunManOWhimsy",
-        TEMPLATE_ID: "template_kwxldvs"
-    };
-
-    // --- TRACKER RUNTIME MANAGEMENT STATE ---
-    const userList = [REAL_NAME_1, REAL_NAME_2];
-    const userBalances = {}; 
-    let countdownInterval = null; 
-    let secondsLeft = 0; 
-    let savedSeconds = 0; 
+    const userList = [REAL_NAME_1, REAL_NAME_2], userBalances = {}; 
+    let countdownInterval = null, secondsLeft = 0, savedSeconds = 0; 
 
     const exercisesDataset = [
         { id: "user1_run", name: "Run for 10 Minutes", payout: 120, allowedUsers: [REAL_NAME_1] },
@@ -79,174 +39,95 @@
         { id: "user2_pushups", name: "12 Pushups", payout: 60, allowedUsers: [REAL_NAME_2] },
         { id: "user2_pullups", name: "1 Pull-up", payout: 10, allowedUsers: [REAL_NAME_2] }
     ];
-
     const shopDataset = [
-        { id: "pc_10", name: "10 Minutes Computer Time", cost: 10, minutes: 10, allowedUsers: ["all"] },
-        { id: "pc_60", name: "1 Hour Computer Time", cost: 60, minutes: 60, allowedUsers: ["all"] },
-        { id: "pc_120", name: "2 Hours Computer Time", cost: 120, minutes: 120, allowedUsers: ["all"] }
+        { id: "pc_10", name: "10 Mins Tech", cost: 10, minutes: 10 },
+        { id: "pc_60", name: "1 Hour Tech", cost: 60, minutes: 60 },
+        { id: "pc_120", name: "2 Hours Tech", cost: 120, minutes: 120 }
     ];
 
     window.onload = function() {
-        if (EMAILJS_KEYS.PUBLIC_KEY && EMAILJS_KEYS.PUBLIC_KEY !== "YOUR_PUBLIC_KEY") {
-            emailjs.init({ publicKey: EMAILJS_KEYS.PUBLIC_KEY });
-        }
-
-        const userDropdown = document.getElementById('userDropdown');
-        const claimBtn = document.getElementById('claimBtn');
-        const startBtn = document.getElementById('startBtn'); 
-        const pauseBtn = document.getElementById('pauseBtn'); 
-        const stopBtn = document.getElementById('stopBtn'); 
-
-        userDropdown.innerHTML = '';
-        userList.forEach(name => {
-            const opt = document.createElement('option');
-            opt.value = name; opt.textContent = name;
-            userDropdown.appendChild(opt);
-            userBalances[name] = 0;
+        const uDrop = document.getElementById('userDropdown');
+        uDrop.innerHTML = '';
+        userList.forEach(n => {
+            const o = document.createElement('option'); o.value = n; o.textContent = n; uDrop.appendChild(o);
+            userBalances[n] = 0;
         });
-
-        userDropdown.addEventListener('change', refreshUserContext);
-        claimBtn.addEventListener('click', handleExerciseClaim);
-        startBtn.addEventListener('click', startTimer);
-        pauseBtn.addEventListener('click', pauseTimer);
-        stopBtn.addEventListener('click', stopTimer);
-
-        refreshUserContext();
+        uDrop.addEventListener('change', refreshContext);
+        document.getElementById('claimBtn').addEventListener('click', claimPoints);
+        document.getElementById('startBtn').addEventListener('click', startTimer);
+        document.getElementById('pauseBtn').addEventListener('click', pauseTimer);
+        document.getElementById('stopBtn').addEventListener('click', stopTimer);
+        refreshContext();
     };
 
-    function refreshUserContext() {
-        const userDropdown = document.getElementById('userDropdown');
-        const displayName = document.getElementById('displayName');
-        const pointsBalance = document.getElementById('pointsBalance');
-        const exerciseSelect = document.getElementById('exerciseSelect');
-        const shopContainer = document.getElementById('shopContainer');
+    function refreshContext() {
+        const name = document.getElementById('userDropdown').value; if (!name) return;
+        document.getElementById('displayName').textContent = name;
+        document.getElementById('pointsBalance').textContent = userBalances[name];
 
-        const currentName = userDropdown.value;
-        if (!currentName) return;
-        
-        displayName.textContent = currentName;
-        pointsBalance.textContent = userBalances[currentName];
-
-        exerciseSelect.innerHTML = '';
-        exercisesDataset.forEach(item => {
-            if (item.allowedUsers.includes("all") || item.allowedUsers.includes(currentName)) {
-                const opt = document.createElement('option');
-                opt.value = item.id; opt.textContent = `${item.name} (+${item.payout} pts)`;
-                exerciseSelect.appendChild(opt);
+        const exSelect = document.getElementById('exerciseSelect'); exSelect.innerHTML = '';
+        exercisesDataset.forEach(i => {
+            if (i.allowedUsers.includes(name)) {
+                const o = document.createElement('option'); o.value = i.id; o.textContent = `${i.name} (+${i.payout} pts)`; exSelect.appendChild(o);
             }
         });
 
-        shopContainer.innerHTML = '';
-        shopDataset.forEach(item => {
-            if (item.allowedUsers.includes("all") || item.allowedUsers.includes(currentName)) {
-                const row = document.createElement('div');
-                row.className = 'shop-item';
-                row.innerHTML = `<span>${item.name} <strong>(${item.cost} pts)</strong></span>`;
-                
-                const buyButton = document.createElement('button');
-                buyButton.className = 'buy-btn'; buyButton.textContent = 'Buy';
-                buyButton.onclick = function() { handlePurchase(item.id, currentName); };
-                
-                row.appendChild(buyButton); 
-                shopContainer.appendChild(row);
-            }
+        const sContainer = document.getElementById('shopContainer'); sContainer.innerHTML = '';
+        shopDataset.forEach(i => {
+            const row = document.createElement('div'); row.className = 'shop-item';
+            row.innerHTML = `<span>${i.name} <strong>(${i.cost} pts)</strong></span>`;
+            const btn = document.createElement('button'); btn.className = 'buy-btn'; btn.textContent = 'Buy';
+            btn.onclick = function() { buyItem(i.id, name); };
+            row.appendChild(btn); sContainer.appendChild(row);
         });
     }
 
-    function handleExerciseClaim() {
-        const userDropdown = document.getElementById('userDropdown');
-        const pointsBalance = document.getElementById('pointsBalance');
-        const exerciseSelect = document.getElementById('exerciseSelect');
-
-        const currentName = userDropdown.value;
-        const selectedId = exerciseSelect.value;
-        const selectedExercise = exercisesDataset.find(ex => ex.id === selectedId);
-        
-        if (selectedExercise) {
-            userBalances[currentName] += selectedExercise.payout;
-            pointsBalance.textContent = userBalances[currentName];
-            alert(`Verified! ${currentName} claimed ${selectedExercise.payout} points.`);
+    function claimPoints() {
+        const name = document.getElementById('userDropdown').value;
+        const ex = exercisesDataset.find(e => e.id === document.getElementById('exerciseSelect').value);
+        if (ex) {
+            userBalances[name] += ex.payout; document.getElementById('pointsBalance').textContent = userBalances[name];
+            alert(`Claimed ${ex.payout} points for ${name}!`);
         }
     }
 
-    function handlePurchase(itemId, buyerName) {
-        const pointsBalance = document.getElementById('pointsBalance');
-        const startBtn = document.getElementById('startBtn'); 
-        const stopBtn = document.getElementById('stopBtn'); 
-
-        const targetItem = shopDataset.find(item => item.id === itemId);
-        if (!targetItem) return;
+    function buyItem(id, name) {
+        const item = shopDataset.find(i => i.id === id); if (!item) return;
+        if (userBalances[name] < item.cost) { alert("Need more points!"); return; }
         
-        if (userBalances[buyerName] < targetItem.cost) {
-            alert(`Insufficient points! ${buyerName} needs more exercises.`);
-            return;
-        }
+        userBalances[name] -= item.cost; document.getElementById('pointsBalance').textContent = userBalances[name];
+        secondsLeft += item.minutes * 60; savedSeconds = secondsLeft; updateClock();
+        document.getElementById('startBtn').disabled = false; document.getElementById('stopBtn').disabled = false;
         
-        userBalances[buyerName] -= targetItem.cost;
-        pointsBalance.textContent = userBalances[buyerName];
-        
-        if (targetItem.minutes > 0) {
-            secondsLeft += targetItem.minutes * 60;
-            savedSeconds = secondsLeft;
-            updateClockDisplay();
-            startBtn.disabled = false; stopBtn.disabled = false;
-        }
-        alert(`Receipt confirmed! ${buyerName} bought: ${targetItem.name}.`);
-        dispatchEmailReceipt(buyerName, targetItem.name, targetItem.cost);
+        alert(`Bought ${item.name}!`); sendReceipt(name, item.name, item.cost);
     }
 
-    function dispatchEmailReceipt(buyerName, purchasedItem, pointCost) {
-        if (!EMAILJS_KEYS.PUBLIC_KEY || EMAILJS_KEYS.PUBLIC_KEY === "YOUR_PUBLIC_KEY") {
-            console.log(`[Simulation Mode] ${buyerName} bought ${purchasedItem} for ${pointCost} points.`);
-            return;
-        }
-        const emailPayload = { buyer_name: buyerName, item_purchased: purchasedItem, cost: pointCost, timestamp: new Date().toLocaleString() };
-        
-        emailjs.send(EMAILJS_KEYS.SERVICE_ID, EMAILJS_KEYS.TEMPLATE_ID, emailPayload)
-            .then(function() { console.log('Email delivery success!'); })
-            .catch(function(error) { alert('Email failed: Check developer panel console logs.'); console.error(error); });
+    function sendReceipt(name, item, cost) {
+        if (EMAILJS_KEYS.PUBLIC_KEY === "YOUR_PUBLIC_KEY") return;
+        const payload = { service_id: EMAILJS_KEYS.SERVICE_ID, template_id: EMAILJS_KEYS.TEMPLATE_ID, user_id: EMAILJS_KEYS.PUBLIC_KEY, template_params: { buyer_name: name, item_purchased: item, cost: cost, timestamp: new Date().toLocaleString() } };
+        fetch('https://emailjs.com', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
     }
 
-    function startTimer() { 
-        const startBtn = document.getElementById('startBtn'); 
-        const pauseBtn = document.getElementById('pauseBtn'); 
-        const timerDisplay = document.getElementById('timer'); 
-        const alarmAudio = document.getElementById('alarmAudio');
+    function startTimer() {
+        document.getElementById('startBtn').disabled = true; document.getElementById('pauseBtn').disabled = false;
+        countdownInterval = setInterval(() => {
+            if (secondsLeft <= 0) {
+                clearInterval(countdownInterval); document.getElementById('timer').textContent = "00:00:00";
+                document.getElementById('pauseBtn').disabled = true; document.getElementById('alarmAudio').play().catch(e=>{});
+                alert("Time's up!"); return;
+            }
+            secondsLeft--; updateClock();
+        }, 1000);
+    }
+    function pauseTimer() { clearInterval(countdownInterval); document.getElementById('startBtn').disabled = false; document.getElementById('pauseBtn').disabled = true; clearAudio(); }
+    function stopTimer() { clearInterval(countdownInterval); secondsLeft = savedSeconds; updateClock(); document.getElementById('startBtn').disabled = false; document.getElementById('pauseBtn').disabled = true; clearAudio(); }
+    function clearAudio() { const a = document.getElementById('alarmAudio'); a.pause(); a.currentTime = 0; }
+    function updateClock() {
+        const h = Math.floor(secondsLeft / 3600), m = Math.floor((secondsLeft % 3600) / 60), s = secondsLeft % 60;
+        document.getElementById('timer').textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }
+</script></body></html>
 
-        startBtn.disabled = true; pauseBtn.disabled = false; 
-        countdownInterval = setInterval(() => { 
-            if (secondsLeft <= 0) { 
-                clearInterval(countdownInterval); timerDisplay.textContent = "00:00:00"; 
-                pauseBtn.disabled = true;
-                alarmAudio.play().catch(e => console.log(e));
-                alert("Time balance exhausted!"); return; 
-            } 
-            secondsLeft--; updateClockDisplay(); 
-        }, 1000); 
-    } 
-
-    function pauseTimer() { 
-        const startBtn = document.getElementById('startBtn'); 
-        const pauseBtn = document.getElementById('pauseBtn'); 
-        const alarmAudio = document.getElementById('alarmAudio');
-        clearInterval(countdownInterval); startBtn.disabled = false; pauseBtn.disabled = true; alarmAudio.pause(); alarmAudio.currentTime = 0; 
-    } 
-    
-    function stopTimer() { 
-        const startBtn = document.getElementById('startBtn'); 
-        const pauseBtn = document.getElementById('pauseBtn'); 
-        const alarmAudio = document.getElementById('alarmAudio');
-        clearInterval(countdownInterval); secondsLeft = savedSeconds; updateClockDisplay(); startBtn.disabled = false; pauseBtn.disabled = true; alarmAudio.pause(); alarmAudio.currentTime = 0; 
-    } 
-    
-    function updateClockDisplay() { 
-        const timerDisplay = document.getElementById('timer'); 
-        const hrs = Math.floor(secondsLeft / 3600); const mins = Math.floor((secondsLeft % 3600) / 60); const secs = secondsLeft % 60; 
-        timerDisplay.textContent = `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`; 
-    } 
-</script> 
-</body> 
-</html>
 
 
 
