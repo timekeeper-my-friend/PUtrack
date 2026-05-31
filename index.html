@@ -102,11 +102,44 @@
         alert(`Bought ${item.name}!`); sendReceipt(name, item.name, item.cost);
     }
 
-    function sendReceipt(name, item, cost) {
-        if (EMAILJS_KEYS.PUBLIC_KEY === "79W_m7oGQ5_DoOKyD") return;
-        const payload = { service_id: EMAILJS_KEYS.SERVICE_ID, template_id: EMAILJS_KEYS.TEMPLATE_ID, user_id: EMAILJS_KEYS.PUBLIC_KEY, template_params: { buyer_name: name, item_purchased: item, cost: cost, timestamp: new Date().toLocaleString() } };
-        fetch('https://emailjs.com', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+     function sendReceipt(name, item, cost) {
+        console.log("sendReceipt invoked. Checking credentials...");
+     
+        // This exact data structure is required by the native EmailJS API endpoint
+        const payload = {
+            service_id: EMAILJS_KEYS.SERVICE_ID,
+            template_id: EMAILJS_KEYS.TEMPLATE_ID,
+            user_id: EMAILJS_KEYS.PUBLIC_KEY,      // EmailJS API maps the Public Key to 'user_id'
+            accessToken: EMAILJS_KEYS.PUBLIC_KEY,  // Duping into accessToken ensures local CORS security clears
+            template_params: {
+                buyer_name: name,
+                item_purchased: item,
+                cost: cost,
+                timestamp: new Date().toLocaleString()
+            }
+        };
+
+        console.log("Sending payload to EmailJS API:", payload);
+
+        fetch('https://emailjs.com', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
+        .then(response => {
+            console.log("Response received from network. Status:", response.status);
+            if (response.ok) { 
+                alert("📬 Success! Receipt message successfully sent to your moderator friend!"); 
+            } else { 
+                response.text().then(text => alert("❌ EmailJS Server rejected request: " + text));
+            }
+        })
+        .catch(error => alert("❌ Fetch network process crashed: " + error));
     }
+
 
     function startTimer() {
         document.getElementById('startBtn').disabled = true; document.getElementById('pauseBtn').disabled = false;
