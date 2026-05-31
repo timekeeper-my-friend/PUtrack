@@ -1,4 +1,6 @@
 <!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Tracker</title>
+<!-- Official EmailJS SDK script link to securely bypass browser network blocks -->
+<script type="text/javascript" src="https://unpkg.com"></script>
 <style>
     body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; background-color: #f3f4f6; padding: 20px; } 
     .tracker { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; max-width: 450px; width: 100%; } 
@@ -15,7 +17,7 @@
     .shop-item { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 6px; }
     .buy-btn { background-color: #16a34a; font-size: 14px; padding: 6px 12px; margin: 0; }
 </style></head><body>
-<audio id="alarmAudio" src="https://google.com" preload="auto"></audio>
+<audio id="alarmAudio" src="https://wikimedia.org" preload="auto"></audio>
 <div class="tracker"> 
     <div class="section"><h3>Select Profile</h3><select id="userDropdown"></select></div>
     <div class="section"><div id="balance-display"><span id="displayName">Loading</span>'s Balance: <span id="pointsBalance">0</span> Points</div></div>
@@ -26,9 +28,8 @@
     </div>
 </div>
 <script> 
-    // --- CONFIGURE SETTINGS DIRECTLY IN THESE LINES ---
-    const REAL_NAME_1 = "Tate", REAL_NAME_2 = "Cooper";
-    const EMAILJS_KEYS = { PUBLIC_KEY: "79W_m7oGQ5_DoOKyD", SERVICE_ID: "theExerciseFunManOWhimsy", TEMPLATE_ID: "template_kwxldvs" };
+    const REAL_NAME_1 = "Awesome", REAL_NAME_2 = "bro";
+    const EMAILJS_KEYS = { PUBLIC_KEY: "YOUR_PUBLIC_KEY", SERVICE_ID: "YOUR_SERVICE_ID", TEMPLATE_ID: "YOUR_TEMPLATE_ID" };
 
     const userList = [REAL_NAME_1, REAL_NAME_2], userBalances = {}; 
     let countdownInterval = null, secondsLeft = 0, savedSeconds = 0; 
@@ -40,14 +41,17 @@
         { id: "user2_pullups", name: "1 Pull-up", payout: 10, allowedUsers: [REAL_NAME_2] }
     ];
     const shopDataset = [
-        { id: "pc_10", name: "10 Mins Tech", cost: 10, minutes: 10 },
-        { id: "pc_60", name: "1 Hour Tech", cost: 60, minutes: 60 },
-        { id: "pc_120", name: "2 Hours Tech", cost: 120, minutes: 120 }
+        { id: "pc_10", name: "10 Mins Tech Time", cost: 10, minutes: 10 },
+        { id: "pc_60", name: "1 Hour Tech Time", cost: 60, minutes: 60 },
+        { id: "pc_120", name: "2 Hours Tech Time", cost: 120, minutes: 120 }
     ];
 
     window.onload = function() {
-        const uDrop = document.getElementById('userDropdown');
-        uDrop.innerHTML = '';
+        // Safe SDK initialization engine routine hook
+        if (EMAILJS_KEYS.PUBLIC_KEY && EMAILJS_KEYS.PUBLIC_KEY !== "YOUR_PUBLIC_KEY") {
+            emailjs.init({ publicKey: EMAILJS_KEYS.PUBLIC_KEY });
+        }
+        const uDrop = document.getElementById('userDropdown'); uDrop.innerHTML = '';
         userList.forEach(n => {
             const o = document.createElement('option'); o.value = n; o.textContent = n; uDrop.appendChild(o);
             userBalances[n] = 0;
@@ -99,47 +103,140 @@
         secondsLeft += item.minutes * 60; savedSeconds = secondsLeft; updateClock();
         document.getElementById('startBtn').disabled = false; document.getElementById('stopBtn').disabled = false;
         
-        alert(`Bought ${item.name}!`); sendReceipt(name, item.name, item.cost);
+        alert(`Receipt confirmed! Buying: ${item.name}`); 
+        sendReceipt(name, item.name, item.cost);
     }
 
-     function sendReceipt(name, item, cost) {
-        console.log("sendReceipt invoked. Checking credentials...");
-     
-        // This exact data structure is required by the native EmailJS API endpoint
-        const payload = {
-            service_id: EMAILJS_KEYS.SERVICE_ID,
-            template_id: EMAILJS_KEYS.TEMPLATE_ID,
-            user_id: EMAILJS_KEYS.PUBLIC_KEY,      // EmailJS API maps the Public Key to 'user_id'
-            accessToken: EMAILJS_KEYS.PUBLIC_KEY,  // Duping into accessToken ensures local CORS security clears
-            template_params: {
-                buyer_name: name,
-                item_purchased: item,
-                cost: cost,
-                timestamp: new Date().toLocaleString()
-            }
+    // Official SDK Implementation: Forces the browser to route emails smoothly
+    function sendReceipt(name, item, cost) {
+        if (EMAILJS_KEYS.PUBLIC_KEY === "YOUR_PUBLIC_KEY") return;
+        
+        const templateParams = {
+            buyer_name: name,
+            item_purchased: item,
+            cost: cost,
+            timestamp: new Date().toLocaleString()
         };
 
-        console.log("Sending payload to EmailJS API:", payload);
-
-        fetch('https://emailjs.com', {
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        })
-        .then(response => {
-            console.log("Response received from network. Status:", response.status);
-            if (response.ok) { 
-                alert("📬 Success! Receipt message successfully sent to your moderator friend!"); 
-            } else { 
-                response.text().then(text => alert("❌ EmailJS Server rejected request: " + text));
-            }
-        })
-        .catch(error => alert("❌ Fetch network process crashed: " + error));
+        emailjs.send(EMAILJS_KEYS.SERVICE_ID, EMAILJS_KEYS.TEMPLATE_ID, templateParams)
+            .then(() => alert("📬 Success! Receipt message successfully sent to your moderator friend!"))
+            .catch((error) => alert("❌ EmailJS Dashboard Error: " + JSON.stringify(error)));
     }
 
+    function startTimer() {
+        document.getElementById('startBtn').disabled = true; document.getElementById('pauseBtn').disabled = false;
+        countdownInterval = setInterval(() => {
+            if (secondsLeft <= 0) {
+                clearInterval(countdownInterval); document.getElementById('timer').textContent = "00:00:00";
+                document.getElementById('pauseBtn').disabled = true; document.getElementById('alarmAudio').play().catch(e=>{});
+                alert("Time's up!"); return;
+            }
+            secondsLeft--; updateClock();
+        }, 1000);
+    }
+    function pauseTimer() { clearInterval(countdownInterval); document.getElementById('startBtn').disabled = false; document.getElementById('pauseBtn').disabled = true; clearAudio(); }
+    function stopTimer() { clearInterval(countdownInterval); secondsLeft = savedSeconds; updateClock(); document.getElementById('startBtn').disabled = false; document.getElementById('pauseBtn').disabled = true; clearAudio(); }
+    function clearAudio() { const a = document.getElementById('alarmAudio'); a.pause(); a.currentTime = 0; }
+    function updateClock() {
+        const h = Math.floor(secondsLeft / 3600), m = Math.floor((secondsLeft % 3600) / 60), s = secondsLeft % 60;
+        document.getElementById('timer').textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }
+</script></body></html>
+<script> 
+    const REAL_NAME_1 = "Awesome", REAL_NAME_2 = "bro";
+    const EMAILJS_KEYS = { PUBLIC_KEY: "YOUR_PUBLIC_KEY", SERVICE_ID: "YOUR_SERVICE_ID", TEMPLATE_ID: "YOUR_TEMPLATE_ID" };
+
+    const userList = [REAL_NAME_1, REAL_NAME_2], userBalances = {}; 
+    let countdownInterval = null, secondsLeft = 0, savedSeconds = 0; 
+
+    const exercisesDataset = [
+        { id: "user1_run", name: "Run for 10 Minutes", payout: 120, allowedUsers: [REAL_NAME_1] },
+        { id: "user1_jacks", name: "60 Jumping Jacks", payout: 60, allowedUsers: [REAL_NAME_1] },
+        { id: "user2_pushups", name: "12 Pushups", payout: 60, allowedUsers: [REAL_NAME_2] },
+        { id: "user2_pullups", name: "1 Pull-up", payout: 10, allowedUsers: [REAL_NAME_2] }
+    ];
+    const shopDataset = [
+        { id: "pc_10", name: "10 Mins Tech Time", cost: 10, minutes: 10 },
+        { id: "pc_60", name: "1 Hour Tech Time", cost: 60, minutes: 60 },
+        { id: "pc_120", name: "2 Hours Tech Time", cost: 120, minutes: 120 }
+    ];
+
+    window.onload = function() {
+        // Safe SDK initialization engine routine hook
+        if (EMAILJS_KEYS.PUBLIC_KEY && EMAILJS_KEYS.PUBLIC_KEY !== "YOUR_PUBLIC_KEY") {
+            emailjs.init({ publicKey: EMAILJS_KEYS.PUBLIC_KEY });
+        }
+        const uDrop = document.getElementById('userDropdown'); uDrop.innerHTML = '';
+        userList.forEach(n => {
+            const o = document.createElement('option'); o.value = n; o.textContent = n; uDrop.appendChild(o);
+            userBalances[n] = 0;
+        });
+        uDrop.addEventListener('change', refreshContext);
+        document.getElementById('claimBtn').addEventListener('click', claimPoints);
+        document.getElementById('startBtn').addEventListener('click', startTimer);
+        document.getElementById('pauseBtn').addEventListener('click', pauseTimer);
+        document.getElementById('stopBtn').addEventListener('click', stopTimer);
+        refreshContext();
+    };
+
+    function refreshContext() {
+        const name = document.getElementById('userDropdown').value; if (!name) return;
+        document.getElementById('displayName').textContent = name;
+        document.getElementById('pointsBalance').textContent = userBalances[name];
+
+        const exSelect = document.getElementById('exerciseSelect'); exSelect.innerHTML = '';
+        exercisesDataset.forEach(i => {
+            if (i.allowedUsers.includes(name)) {
+                const o = document.createElement('option'); o.value = i.id; o.textContent = `${i.name} (+${i.payout} pts)`; exSelect.appendChild(o);
+            }
+        });
+
+        const sContainer = document.getElementById('shopContainer'); sContainer.innerHTML = '';
+        shopDataset.forEach(i => {
+            const row = document.createElement('div'); row.className = 'shop-item';
+            row.innerHTML = `<span>${i.name} <strong>(${i.cost} pts)</strong></span>`;
+            const btn = document.createElement('button'); btn.className = 'buy-btn'; btn.textContent = 'Buy';
+            btn.onclick = function() { buyItem(i.id, name); };
+            row.appendChild(btn); sContainer.appendChild(row);
+        });
+    }
+
+    function claimPoints() {
+        const name = document.getElementById('userDropdown').value;
+        const ex = exercisesDataset.find(e => e.id === document.getElementById('exerciseSelect').value);
+        if (ex) {
+            userBalances[name] += ex.payout; document.getElementById('pointsBalance').textContent = userBalances[name];
+            alert(`Claimed ${ex.payout} points for ${name}!`);
+        }
+    }
+
+    function buyItem(id, name) {
+        const item = shopDataset.find(i => i.id === id); if (!item) return;
+        if (userBalances[name] < item.cost) { alert("Need more points!"); return; }
+        
+        userBalances[name] -= item.cost; document.getElementById('pointsBalance').textContent = userBalances[name];
+        secondsLeft += item.minutes * 60; savedSeconds = secondsLeft; updateClock();
+        document.getElementById('startBtn').disabled = false; document.getElementById('stopBtn').disabled = false;
+        
+        alert(`Receipt confirmed! Buying: ${item.name}`); 
+        sendReceipt(name, item.name, item.cost);
+    }
+
+    // Official SDK Implementation: Forces the browser to route emails smoothly
+    function sendReceipt(name, item, cost) {
+        if (EMAILJS_KEYS.PUBLIC_KEY === "YOUR_PUBLIC_KEY") return;
+        
+        const templateParams = {
+            buyer_name: name,
+            item_purchased: item,
+            cost: cost,
+            timestamp: new Date().toLocaleString()
+        };
+
+        emailjs.send(EMAILJS_KEYS.SERVICE_ID, EMAILJS_KEYS.TEMPLATE_ID, templateParams)
+            .then(() => alert("📬 Success! Receipt message successfully sent to your moderator friend!"))
+            .catch((error) => alert("❌ EmailJS Dashboard Error: " + JSON.stringify(error)));
+    }
 
     function startTimer() {
         document.getElementById('startBtn').disabled = true; document.getElementById('pauseBtn').disabled = false;
