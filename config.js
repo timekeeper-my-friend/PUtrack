@@ -28,7 +28,7 @@ export const shopDataset = [
 // --- EMAILJS CONFIGURATION ---
 // Get keys for free at https://emailjs.com
 export const EMAILJS_KEYS = {
-    PUBLIC_KEY: "YOUR_PUBLIC_KEY",
-    SERVICE_ID: "YOUR_SERVICE_ID",
-    TEMPLATE_ID: "YOUR_TEMPLATE_ID"
+    PUBLIC_KEY: "79W_m7oGQ5_DoOKyD",
+    SERVICE_ID: "theExerciseFunManOWhimsy",
+    TEMPLATE_ID: "template_kwxldvs"
 };
