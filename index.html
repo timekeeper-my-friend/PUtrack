@@ -28,8 +28,8 @@
     </div>
 </div>
 <script> 
-    const REAL_NAME_1 = "Awesome", REAL_NAME_2 = "bro";
-    const EMAILJS_KEYS = { PUBLIC_KEY: "YOUR_PUBLIC_KEY", SERVICE_ID: "YOUR_SERVICE_ID", TEMPLATE_ID: "YOUR_TEMPLATE_ID" };
+    const REAL_NAME_1 = "Tate", REAL_NAME_2 = "Cooper";
+    const EMAILJS_KEYS = { PUBLIC_KEY: "79W_m7oGQ5_DoOKyD", SERVICE_ID: "theExerciseFunManOWhimsy", TEMPLATE_ID: "template_kwxldvs" };
 
     const userList = [REAL_NAME_1, REAL_NAME_2], userBalances = {}; 
     let countdownInterval = null, secondsLeft = 0, savedSeconds = 0; 
@@ -109,7 +109,7 @@
 
     // Official SDK Implementation: Forces the browser to route emails smoothly
     function sendReceipt(name, item, cost) {
-        if (EMAILJS_KEYS.PUBLIC_KEY === "YOUR_PUBLIC_KEY") return;
+        if (EMAILJS_KEYS.PUBLIC_KEY === "79W_m7oGQ5_DoOKyD") return;
         
         const templateParams = {
             buyer_name: name,
