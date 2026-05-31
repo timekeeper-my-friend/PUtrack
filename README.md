@@ -1,2 +1,2 @@
 # PUtrack
-For my bro 
+Made to budget technology time using exercise.
