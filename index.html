@@ -25,6 +25,8 @@
     </style> 
 </head> 
 <body> 
+<!-- Publicly sourced alarm audio tracker file -->
+<audio id="alarmAudio" src="https://google.com" preload="auto"></audio>
 <div class="tracker"> 
     <div class="section">
         <h3>Select Profile</h3>
@@ -74,6 +76,7 @@
     const startBtn = document.getElementById('startBtn'); 
     const pauseBtn = document.getElementById('pauseBtn'); 
     const stopBtn = document.getElementById('stopBtn'); 
+    const alarmAudio = document.getElementById('alarmAudio');
 
     function initApp() {
         userList.forEach(name => {
@@ -165,14 +168,17 @@
         countdownInterval = setInterval(() => { 
             if (secondsLeft <= 0) { 
                 clearInterval(countdownInterval); timerDisplay.textContent = "00:00:00"; 
-                pauseBtn.disabled = true; alert("Time balance exhausted!"); return; 
+                pauseBtn.disabled = true;
+                alarmAudio.play().catch(e => console.log("Audio play blocked by browser:", e));
+                alert("Time balance exhausted!"); return; 
             } 
             secondsLeft--; updateClockDisplay(); 
         }, 1000); 
     } 
 
-    function pauseTimer() { clearInterval(countdownInterval); startBtn.disabled = false; pauseBtn.disabled = true; } 
-    function stopTimer() { clearInterval(countdownInterval); secondsLeft = savedSeconds; updateClockDisplay(); startBtn.disabled = false; pauseBtn.disabled = true; } 
+    function pauseTimer() { clearInterval(countdownInterval); startBtn.disabled = false; pauseBtn.disabled = true; alarmAudio.pause(); alarmAudio.currentTime = 0; } 
+    function stopTimer() { clearInterval(countdownInterval); secondsLeft = savedSeconds; updateClockDisplay(); startBtn.disabled = false; pauseBtn.disabled = true; alarmAudio.pause(); alarmAudio.currentTime = 0; } 
+    
     function updateClockDisplay() { 
         const hrs = Math.floor(secondsLeft / 3600); const mins = Math.floor((secondsLeft % 3600) / 60); const secs = secondsLeft % 60; 
         timerDisplay.textContent = `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`; 
