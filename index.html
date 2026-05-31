@@ -103,7 +103,7 @@
     }
 
     function sendReceipt(name, item, cost) {
-        if (EMAILJS_KEYS.PUBLIC_KEY === "YOUR_PUBLIC_KEY") return;
+        if (EMAILJS_KEYS.PUBLIC_KEY === "79W_m7oGQ5_DoOKyD") return;
         const payload = { service_id: EMAILJS_KEYS.SERVICE_ID, template_id: EMAILJS_KEYS.TEMPLATE_ID, user_id: EMAILJS_KEYS.PUBLIC_KEY, template_params: { buyer_name: name, item_purchased: item, cost: cost, timestamp: new Date().toLocaleString() } };
         fetch('https://emailjs.com', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
     }
