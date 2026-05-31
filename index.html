@@ -27,9 +27,6 @@
     </div>
 </div>
 <script> 
-    // =========================================================================
-    // ⚙️ CONFIGURED SYSTEM DATA & KEYS (VERIFIED)
-    // =========================================================================
     const REAL_NAME_1 = "Tate"; 
     const REAL_NAME_2 = "Cooper";
 
@@ -39,9 +36,6 @@
         TEMPLATE_ID: "template_kwxldvs" 
     };
 
-    // =========================================================================
-    // 🚫 SYSTEM RUNTIME ENGINE (OPERATIONAL DO NOT ALTER)
-    // =========================================================================
     const userList = [REAL_NAME_1, REAL_NAME_2], userBalances = {}; 
     let countdownInterval = null, secondsLeft = 0, savedSeconds = 0; 
 
@@ -135,12 +129,15 @@
     function pauseTimer() { clearInterval(countdownInterval); document.getElementById('startBtn').disabled = false; document.getElementById('pauseBtn').disabled = true; clearAudio(); }
     function stopTimer() { clearInterval(countdownInterval); secondsLeft = savedSeconds; updateClock(); document.getElementById('startBtn').disabled = false; document.getElementById('pauseBtn').disabled = true; clearAudio(); }
     function clearAudio() { const a = document.getElementById('alarmAudio'); a.pause(); a.currentTime = 0; }
+    
     function updateClock() {
-        const h = Math.floor(secondsLeft / 3600), m = Math.floor((countdownInterval ? secondsLeft % 3600 : secondsLeft) / 60), s = secondsLeft % 60;
-        const exactMin = Math.floor((secondsLeft % 3600) / 60);
-        document.getElementById('timer').textContent = `${String(h).padStart(2,'0')}:${String(exactMin).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+        const h = Math.floor(secondsLeft / 3600);
+        const m = Math.floor((secondsLeft % 3600) / 60);
+        const s = secondsLeft % 60;
+        document.getElementById('timer').textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
     }
 </script></body></html>
+
 
 
 
